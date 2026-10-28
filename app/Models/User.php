@@ -34,4 +34,9 @@ implements OAuthenticatable
             'role' => Role::class,
         ];
     }
+    // True when the user has any of the given roles.
+    public function hasRole(Role ...$roles): bool
+    {
+        return in_array($this->role, $roles, true);
+    }
 }
