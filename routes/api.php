@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\ItemController;
@@ -16,6 +17,7 @@ Route::post('/auth/login', [AuthController::class, 'login'])
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::get('/categories', [CategoryController::class, 'index']);
 
     Route::get('/items', [ItemController::class, 'index'])->can('viewAny', Item::class);
     Route::post('/items', [ItemController::class, 'store'])->can('create', Item::class);

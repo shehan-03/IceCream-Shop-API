@@ -78,4 +78,15 @@ class ItemTest extends TestCase
 
         $this->getJson('/api/items?search=strawberry')->assertOk()->assertJsonCount(0, 'data');
     }
+    public function test_categories_are_listed_alphabetically(): void
+    {
+        Category::factory()->create(['name' => 'Vanilla']);
+
+        $this->getJson('/api/categories')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.name', 'Chocolate')
+            ->assertJsonPath('data.1.name', 'Vanilla');
+    }
+
 }
