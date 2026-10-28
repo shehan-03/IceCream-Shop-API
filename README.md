@@ -1,58 +1,229 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ice Cream Shop API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A REST API built with Laravel for managing an ice cream shop's inventory and customer records. It includes token-based authentication and role-based permissions for Owners, Managers and Cashiers.
 
-## About Laravel
+## Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 13
+- PHP 8.3
+- MySQL 8
+- Laravel Passport 13
+- PHPUnit
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Login and logout using Laravel Passport access tokens
+- Create, view, update and delete inventory items
+- Manage customer records
+- Search items and customers with pagination
+- Role-based permissions for Owners, Managers and Cashiers
+- Request validation and consistent JSON error responses
+- Login rate limiting
+- Database migrations, factories and seeders
+- Automated tests for API endpoints and role permissions
 
-## Learning Laravel
+## User Roles
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Each role has different permissions depending on the resource.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Action | Owner | Manager | Cashier |
+|---|---|---|---|
+| View items | Yes | Yes | Yes |
+| Create items | Yes | Yes | No |
+| Update items | Yes | Yes | Yes |
+| Delete items | Yes | No | No |
+| View customers | Yes | Yes | Yes |
+| Create customers | Yes | Yes | Yes |
+| Update customers | Yes | Yes | Yes |
+| Delete customers | Yes | No | No |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Permissions are handled through Laravel Policies in `app/Policies/ItemPolicy.php` and `app/Policies/CustomerPolicy.php`.
 
-## Agentic Development
+## Requirements
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- PHP 8.3 or later
+- Composer 2
+- MySQL 8
+- Required PHP extensions: `pdo_mysql`, `openssl`, `mbstring`, `sodium` and `zip`
+
+On Windows, you can use [Laragon](https://laragon.org/) to set up PHP, Composer and MySQL.
+
+## Installation
+
+Clone the repository and install the dependencies:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/shehan-03/IceCream-Shop-API.git
+cd IceCream-Shop-API
+composer install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Create your environment file:
 
-## Contributing
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+On Windows Command Prompt, use `copy .env.example .env` instead of the `cp` command.
 
-## Code of Conduct
+Create two MySQL databases:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```sql
+CREATE DATABASE icecream_shop
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 
-## Security Vulnerabilities
+CREATE DATABASE icecream_shop_test
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Update the database settings in your `.env` file.
 
-## License
+Run the migrations and seed the database:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate --seed
+```
+
+Set up Passport's encryption keys and personal access client:
+
+```bash
+php artisan passport:keys
+php artisan passport:client --personal --provider=users --no-interaction
+```
+
+Start the development server:
+
+```bash
+php artisan serve
+```
+
+The API will be available at `http://127.0.0.1:8000`.
+
+To reset the database, run:
+
+```bash
+php artisan migrate:fresh --seed
+php artisan passport:client --personal --provider=users --no-interaction
+```
+
+The reset removes Passport's personal access client, so the second command is needed before you can log in again.
+
+## Test Accounts
+
+The database seeder creates the following accounts:
+
+| Role | Email | Password |
+|---|---|---|
+| Owner | `owner@icecream.test` | `password` |
+| Manager | `manager@icecream.test` | `password` |
+| Cashier | `cashier@icecream.test` | `password` |
+
+It also creates sample categories, inventory items and customers.
+
+These credentials are for local development only.
+
+## API Endpoints
+
+All endpoints return JSON. Login is public; the other endpoints require a valid access token unless stated otherwise.
+
+Include the following header in authenticated requests:
+
+```http
+Authorization: Bearer <token>
+```
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/login` | Log in and receive an access token |
+| POST | `/api/auth/logout` | Revoke the current token |
+| GET | `/api/auth/me` | Get the authenticated user's details |
+
+### Categories
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/categories` | List available ice cream categories |
+
+### Inventory Items
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/items` | List items with search and pagination |
+| GET | `/api/items/{id}` | Get an item |
+| POST | `/api/items` | Create an item |
+| PUT/PATCH | `/api/items/{id}` | Update an item |
+| DELETE | `/api/items/{id}` | Delete an item |
+
+Use the `search`, `page` and `per_page` query parameters when listing items.
+
+### Customers
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/customers` | List customers with search and pagination |
+| GET | `/api/customers/{id}` | Get a customer |
+| POST | `/api/customers` | Create a customer |
+| PUT/PATCH | `/api/customers/{id}` | Update a customer |
+| DELETE | `/api/customers/{id}` | Delete a customer |
+
+Customer search supports name, email and phone.
+
+### Example Request
+
+Create an inventory item:
+
+```http
+POST /api/items
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+```json
+{
+  "category_id": 1,
+  "name": "Mint Chocolate Chip",
+  "price": 480,
+  "quantity": 20
+}
+```
+
+The user must have permission to create inventory items.
+
+## Postman
+
+Import `postman/IceCreamShop.postman_collection.json` into Postman.
+
+Start by running one of the login requests for the Owner, Manager or Cashier. The collection saves the returned token for subsequent requests.
+
+## Running Tests
+
+The project includes automated tests for authentication, inventory, customers and role permissions.
+
+Run the tests with:
+
+```bash
+php artisan test
+```
+
+Tests use the separate `icecream_shop_test` database configured in `phpunit.xml`, keeping development data separate.
+
+The test suite covers:
+
+- Login, validation and token revocation
+- Access without authentication
+- Permissions for each role
+- Inventory CRUD operations, search and pagination
+- Customer CRUD operations and search
+- Validation errors and missing records
+- Policy logic
+
+## Database Design
+
+![ER diagram](docs/ER-diagram.png)
+
+The diagram is in `docs/ER-diagram.png`. The editable source is `docs/ER-diagram.drawio` (open it at [draw.io](https://app.diagrams.net)).
