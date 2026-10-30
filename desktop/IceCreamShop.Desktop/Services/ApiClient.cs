@@ -42,4 +42,34 @@ public class ApiClient
             new AuthenticationHeaderValue("Bearer", body!.Data!.Token);
         CurrentUser = body.Data.User;
     }
+    public async Task<List<Item>> GetItemsAsync(string search)
+    {
+        var url = $"items?per_page=100&search={Uri.EscapeDataString(search)}";
+        var response = await _http.GetAsync(url);
+        await ThrowIfErrorAsync(response);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<List<Item>>>(_json);
+        return body?.Data ?? new List<Item>();
+    }
+
+        public async Task<List<Category>> GetCategoriesAsync()
+    {
+        var response = await _http.GetAsync("categories");
+        await ThrowIfErrorAsync(response);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<List<Category>>>(_json);
+        return body?.Data ?? new List<Category>();
+    }
+
+    public async Task CreateItemAsync(Item item)
+    {
+        var response = await _http.PostAsJsonAsync("items", item, _json);
+        await ThrowIfErrorAsync(response);
+    }
+
+    public async Task UpdateItemAsync(Item item)
+    {
+        var response = await _http.PutAsJsonAsync($"items/{item.Id}", item, _json);
+        await ThrowIfErrorAsync(response);
+    }
 }
