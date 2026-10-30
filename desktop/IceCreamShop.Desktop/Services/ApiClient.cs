@@ -72,4 +72,26 @@ public class ApiClient
         var response = await _http.PutAsJsonAsync($"items/{item.Id}", item, _json);
         await ThrowIfErrorAsync(response);
     }
+
+        public async Task<List<Customer>> GetCustomersAsync(string search)
+    {
+        var url = $"customers?per_page=100&search={Uri.EscapeDataString(search)}";
+        var response = await _http.GetAsync(url);
+        await ThrowIfErrorAsync(response);
+
+        var body = await response.Content.ReadFromJsonAsync<ApiResponse<List<Customer>>>(_json);
+        return body?.Data ?? new List<Customer>();
+    }
+
+    public async Task CreateCustomerAsync(Customer customer)
+    {
+        var response = await _http.PostAsJsonAsync("customers", customer, _json);
+        await ThrowIfErrorAsync(response);
+    }
+
+    public async Task UpdateCustomerAsync(Customer customer)
+    {
+        var response = await _http.PutAsJsonAsync($"customers/{customer.Id}", customer, _json);
+        await ThrowIfErrorAsync(response);
+    }
 }

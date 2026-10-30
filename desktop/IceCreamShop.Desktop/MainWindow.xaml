@@ -35,6 +35,33 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
+            <TabItem Header="Customers">
+                <DockPanel Margin="10">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBox x:Name="CustomerSearchBox" Width="200" />
+                        <Button Content="Search" Margin="6,0,0,0" Padding="8,2"
+                                Click="CustomerSearchButton_Click" />
+                        <Button Content="Add" Margin="20,0,0,0" Padding="8,2"
+                                Click="AddCustomerButton_Click" />
+                        <Button Content="Edit" Margin="6,0,0,0" Padding="8,2"
+                                Click="EditCustomerButton_Click" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="CustomerErrorText" DockPanel.Dock="Top" Foreground="Red"
+                               TextWrapping="Wrap" Margin="0,0,0,8" />
+
+                    <DataGrid x:Name="CustomersGrid" AutoGenerateColumns="False"
+                              IsReadOnly="True" SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                            <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" />
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
+                            <DataGridTextColumn Header="Address" Binding="{Binding Address}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
         </TabControl>
     </DockPanel>
 </Window>

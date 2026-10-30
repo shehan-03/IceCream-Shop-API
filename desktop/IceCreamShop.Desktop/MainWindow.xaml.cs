@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         await LoadItemsAsync();
+        await LoadCustomersAsync();
     }
 
     private async void ItemSearchButton_Click(object sender, RoutedEventArgs e)
@@ -52,5 +53,42 @@ public partial class MainWindow : Window
         var dialog = new ItemDialog(item) { Owner = this };
         dialog.ShowDialog();
         await LoadItemsAsync();
+    }
+    private async void CustomerSearchButton_Click(object sender, RoutedEventArgs e)
+    {
+        await LoadCustomersAsync();
+    }
+
+    private async Task LoadCustomersAsync()
+    {
+        CustomerErrorText.Text = "";
+        try
+        {
+            CustomersGrid.ItemsSource = await App.Api.GetCustomersAsync(CustomerSearchBox.Text);
+        }
+        catch (Exception ex)
+        {
+            CustomerErrorText.Text = ex.Message;
+        }
+    }
+
+    private async void AddCustomerButton_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new CustomerDialog { Owner = this };
+        dialog.ShowDialog();
+        await LoadCustomersAsync();
+    }
+
+    private async void EditCustomerButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (CustomersGrid.SelectedItem is not Customer customer)
+        {
+            CustomerErrorText.Text = "Select a customer to edit first.";
+            return;
+        }
+
+        var dialog = new CustomerDialog(customer) { Owner = this };
+        dialog.ShowDialog();
+        await LoadCustomersAsync();
     }
 }
