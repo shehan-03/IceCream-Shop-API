@@ -5,7 +5,11 @@
         WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded">
     <DockPanel Margin="10">
-        <TextBlock x:Name="UserText" DockPanel.Dock="Top" Margin="0,0,0,10" />
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+            <Button Content="Logout" DockPanel.Dock="Right" Padding="8,2"
+                    Click="LogoutButton_Click" />
+            <TextBlock x:Name="UserText" VerticalAlignment="Center" />
+        </DockPanel>
 
         <TabControl>
             <TabItem Header="Items">

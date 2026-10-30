@@ -94,4 +94,13 @@ public class ApiClient
         var response = await _http.PutAsJsonAsync($"customers/{customer.Id}", customer, _json);
         await ThrowIfErrorAsync(response);
     }
+
+    public async Task LogoutAsync()
+    {
+        var response = await _http.PostAsync("auth/logout", null);
+        await ThrowIfErrorAsync(response);
+
+        _http.DefaultRequestHeaders.Authorization = null;
+        CurrentUser = null;
+    }
 }

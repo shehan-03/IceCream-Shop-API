@@ -91,4 +91,19 @@ public partial class MainWindow : Window
         dialog.ShowDialog();
         await LoadCustomersAsync();
     }
+
+    private async void LogoutButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await App.Api.LogoutAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+
+        new LoginWindow().Show();
+        Close();
+    }
 }
