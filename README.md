@@ -227,3 +227,49 @@ The test suite covers:
 ![ER diagram](docs/ER-diagram.png)
 
 The diagram is in `docs/ER-diagram.png`. The editable source is `docs/ER-diagram.drawio` (open it at [draw.io](https://app.diagrams.net)).
+
+## Desktop App (WPF)
+
+The project also includes an optional Windows desktop application built with C# WPF and .NET 8, located in `desktop/IceCreamShop.Desktop`.
+
+The application uses the Laravel API for all operations. This means authentication, permissions and validation are handled by the backend.
+
+### Features
+
+- Login and logout using the Owner, Manager and Cashier accounts
+- View and search inventory items
+- Add and edit items
+- View and search customers
+- Add and edit customers
+- Display API errors in the application, including permission errors when a user tries to perform an action they are not allowed to do
+
+### Requirements
+
+- Windows
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- Laravel API running at `http://127.0.0.1:8000`
+
+### Running the App
+
+First, start the Laravel API:
+
+```bash
+php artisan serve
+```
+
+Then open another terminal and run the desktop application:
+
+```bash
+dotnet run --project desktop/IceCreamShop.Desktop/IceCreamShop.Desktop.csproj
+```
+
+Once the application opens, log in using one of the test accounts listed above.
+
+### Project Structure
+
+- `Models/` – C# models used for API responses and requests.
+- `Services/ApiClient.cs` – Handles API requests, authentication tokens, JSON conversion and error handling.
+- `LoginWindow` – Login screen.
+- `MainWindow` – Main application window with Items and Customers tabs.
+- `ItemDialog` – Form for adding and editing items.
+- `CustomerDialog` – Form for adding and editing customers.
